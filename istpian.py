@@ -1,4 +1,3 @@
-import re
 import random
 import argparse
 import requests
@@ -22,7 +21,7 @@ def banner():
         ██║╚════██║   ██║   ██╔═══╝ ██║██╔══██║██║╚██╗██║
         ██║███████║   ██║   ██║     ██║██║  ██║██║ ╚████║
         ╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
-        """+RED+"""made by name
+        """+GREEN+"""made by ...
     """ + ENDC)
 
 
@@ -36,10 +35,7 @@ def arguments():
 
 
 def is_tanta(url):
-  #  https://eng.tanta.edu.eg/
-    is_tanta_unvirsty = re.search('https://.*/', url)
-
-    if is_tanta_unvirsty != "https://eng.tanta.edu.eg/":
+    if url.find("tanta") == -1:
         print(RED + "\t\t\t Sorry It Must Be Tanta Universty " + ENDC)
         exit()
 
@@ -61,8 +57,20 @@ def cookie_file():
     return cookie_list
 
 
+def cookie_dictionary(cookie):
+    if cookie == None:
+        cookie_split = cookie_file()
+    else:
+        cookie_split = cookie_array(cookie)
+
+    cookies = {}
+    cookies[cookie_split[0]] = cookie_split[1]
+
+    return cookies
+
+
 def get_the_page_content(url, cookies):
-    response = requests.get(url, cookies=cookies)
+    response = requests.get(url, cookies=cookies, verify=False)
     return response.text
 
 
@@ -83,7 +91,7 @@ def get_the_input_data(input_list, input_value):
 
 
 def submit_form(action, data, cookie):
-    r = requests.post(action, data=data, cookies=cookie)
+    r = requests.post(action, data=data, cookies=cookie,  verify=False)
     print(r.text)
     print(GREEN + "Istpian Is Completed Successfully" + ENDC)
 
@@ -94,15 +102,9 @@ def start():
     url = args.url
     options = args.options
     cookie = args.cookie
-    # is_tanta(url)
 
-    if cookie == None:
-        cookie_split = cookie_file()
-    else:
-        cookie_split = cookie_array(cookie)
-
-    cookies = {}
-    cookies[cookie_split[0]] = cookie_split[1]
+    is_tanta(url)
+    cookies = cookie_dictionary(cookie)
 
     soup = BeautifulSoup(get_the_page_content(url, cookies), 'html.parser')
 
