@@ -2,6 +2,9 @@ import random
 import argparse
 import requests
 from bs4 import BeautifulSoup
+from cookieClass import Cookies
+from envClass import Env
+
 
 HEADER = '\033[95m'
 GREEN = '\033[92m'
@@ -27,10 +30,19 @@ def banner():
 
 def arguments():
     parser = argparse.ArgumentParser(description='file istpian form')
-    parser.add_argument('-u', '--url', help='please enter url', required=True)
+    parser.add_argument('-u', '--url', help='please enter url')
+   
     parser.add_argument('-op', '--options', nargs='+',
-                        help='please enter options', required=True)
-    parser.add_argument('--cookie', help='please enter cookies')
+                        help='please enter options')
+   
+    parser.add_argument('-sub', '--subjects', nargs='+',
+                        help='please enter options')
+    
+    parser.add_argument('-r', help="please enter the env file path" )
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--cookie', help='please enter cookies')
+    group.add_argument('--path' , help='please enter the path to the file contains the cookie')
     return parser.parse_args()
 
 
@@ -38,35 +50,6 @@ def is_tanta(url):
     if url.find("tanta") == -1:
         print(RED + "\t\t\t Sorry It Must Be Tanta Universty " + ENDC)
         exit()
-
-
-def cookie_array(cookie):
-    cookie_name = cookie.split('=')[0]
-    cookie_value = cookie.split('=')[1]
-
-    cookie_list = [cookie_name, cookie_value]
-
-    return cookie_list
-
-
-def cookie_file():
-    cookie_file = open('cookie.txt', 'r')
-    cookie = cookie_file.read()
-    cookie_list = cookie_array(cookie)
-
-    return cookie_list
-
-
-def cookie_dictionary(cookie):
-    if cookie == None:
-        cookie_split = cookie_file()
-    else:
-        cookie_split = cookie_array(cookie)
-
-    cookies = {}
-    cookies[cookie_split[0]] = cookie_split[1]
-
-    return cookies
 
 
 def get_the_page_content(url, cookies):
@@ -99,18 +82,29 @@ def submit_form(action, data, cookie):
 def start():
     banner()
     args = arguments()
-    url = args.url
-    options = args.options
-    cookie = args.cookie
 
-    is_tanta(url)
-    cookies = cookie_dictionary(cookie)
+    if args.r :
+        env = Env(args.r)
+        args.url, args.options, args.sub  = env.get_val('url'),  env.get_val('options'),  env.get_val('subjects')
+        CookieObject = Cookies(cookie=env.get_val('cookie'))
+    else:
+        if args.path != None:
+            CookieObject = Cookies(path=args.path)
+        else:
+            CookieObject = Cookies(cookie=args.cookie)
 
-    soup = BeautifulSoup(get_the_page_content(url, cookies), 'html.parser')
+   
+    # is_tanta(args.url)
 
-    data = get_the_input_data(soup.find_all('input'), options)
+    cookies = CookieObject.cookie_formate()
 
-    submit_form(soup.form.get('action'), data, cookies)
+    print(cookies)
+ 
+    # soup = BeautifulSoup(get_the_page_content(args.url, cookies), 'html.parser')
+
+    # data = get_the_input_data(soup.find_all('input'), args.options)
+
+    # submit_form(soup.form.get('action'), data, cookies)
 
 
 if __name__ == "__main__":
