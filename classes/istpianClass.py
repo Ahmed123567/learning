@@ -14,41 +14,17 @@ ENDC = '\033[0m'
 
 class Istpian():
     
-    def __init__(self ,cookie, uni, year, input_random_values):
+    def __init__(self ,cookie, url, formNum, options):
         self.cookie = cookie
-        self.uni = uni
-        self.year = year
-
-        # this supported uinversties dictionary contain 
-        # url => 'the url of the istpian form'
-        # formNum => 'it the third form in the page for example '
-        # how to get the formNum write click the browser page => viewsourcepage then start count the forms 
-        # until you reach the istpian form
-        self.suportedUnis = {
-            
-            'tanta':{ 
-                       'year3' :{'url':'http://www.google.com' , 'formNum' : 0}
-                    }
-            
-            # you can add your universty url and formNum here 
-            """
-            'cairo':{
-                    'year1':{'url':'????????????????????' , 'formNum' : ?},
-                    'year2':{'url':'????????????????????' , 'formNum' : ?},
-            }
-            
-            """ 
-
-            }
-
+        self.url = url
+        self.formNum = int(formNum)
+        
         self.subject = ''
        
-        self.is_suported_uni()
-
-        self.url = self.suportedUnis[self.uni][self.year]['url'] + '/' + self.subject
+        self.url = self.url + '/' + self.subject
 
         self.input_field_list = ''
-        self.input_random_values = input_random_values
+        self.input_random_values = options
         self.action = ''
         self.deal_with_soup()
         self.data = self.genrate_input_data()
@@ -56,8 +32,7 @@ class Istpian():
        
     def trythis(self):
         print(self.url)
-        print(self.year)
-        print(self.suportedUnis[self.uni][self.year]['formNum'])
+       
         print(self.action) 
         # print(self.input_field_list)
 
@@ -71,24 +46,10 @@ class Istpian():
 
         self.input_field_list = soup.find_all('input')
 
-        self.action = soup.find_all('form')[self.suportedUnis[self.uni][self.year]['formNum']].get('action')
+        self.action = soup.find_all('form')[self.formNum].get('action')
 
 
-    # check if the uni is suported
-    # list all the suported unis and years
-    def is_suported_uni (self):
-        try:
-            self.suportedUnis[self.uni]
-        except Exception:
-           
-            print(self.uni + ' ' + self.year + ' is not suported')
-           
-            print(f'{GREEN}suported universties:{RED}')
-            for key in self.suportedUnis:
-                for key2 in self.suportedUnis[key]:
-                    print( '\t' +key +'--->'+key2)
-            exit()
-
+    
     # get the page content and put it in the soup
     def get_the_page_content(self):
         try:
@@ -118,11 +79,11 @@ class Istpian():
     def fire(self):
         try:
             r = requests.post(self.action, data=self.data, cookies=self.cookie,  verify=False)
+            print(r.text)
+            print(GREEN + "Istpian Is Completed Successfully" + ENDC)
         except  Exception as e:
             print(e)
             exit()
         
-        print(r.text)
-        print(GREEN + "Istpian Is Completed Successfully" + ENDC)
-
+       
       

@@ -1,6 +1,4 @@
-import random
 import argparse
-import requests
 from bs4 import BeautifulSoup
 from classes.cookieClass import Cookies
 from classes.envClass import Env
@@ -42,11 +40,18 @@ def start():
     args = arguments()
 
     env = Env(args.r)
+
+    print(env.get_all())
       
     CookieObject = Cookies(cookie = env.get_val('cookie'))
     cookies = CookieObject.cookie_formate()
 
-    istpian = Istpian(cookies , env.get_val('uni')  , 'year' + env.get_val('year') , env.get_val('options'))
+    istpian = Istpian(
+                        cookie=cookies ,
+                        url=env.get_val('url'),
+                        formNum=env.get_val('formNum'),
+                        options=env.get_val('options')
+                        )
 
     istpian.trythis()
 

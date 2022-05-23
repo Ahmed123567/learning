@@ -1,4 +1,9 @@
 
+RED = '\033[91m'
+ENDC = '\033[0m'
+
+
+
 class Env():
 
     def __init__(self,path):
@@ -19,7 +24,8 @@ class Env():
             
             
             for line in lines:
-                var_and_val[line.split(':',1)[0]] =self.__check_for_list(line.split(':',1)[1].replace('\n',''))
+                if line.find(':=') != -1 :
+                    var_and_val[line.split(':=',1)[0]] =self.__check_for_list(line.split(':=',1)[1].replace('\n',''))
         
         except Exception as e :
             print(e)
@@ -43,9 +49,13 @@ class Env():
 
 
     def get_val(self, varname): 
+        
+        if self.__data.get(varname) == None:
+            print(f'{RED}Errore at env.get_val({varname}) {varname} key dosent exist{ENDC}')
+            exit()
 
-        return self.__data.get(varname) 
-
+        return self.__data.get(varname)
+        
 
     # insert if not exist update if exist 
     # update self.__data dictionary
