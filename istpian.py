@@ -40,22 +40,24 @@ def start():
     args = arguments()
 
     env = Env(args.r)
-
     print(env.get_all())
-      
     CookieObject = Cookies(cookie = env.get_val('cookie'))
-    cookies = CookieObject.cookie_formate()
-
+    
     istpian = Istpian(
-                        cookie=cookies ,
+                        cookie=CookieObject.cookie_formate() ,
                         url=env.get_val('url'),
-                        formNum=env.get_val('formNum'),
                         options=env.get_val('options')
-                        )
-
-    istpian.trythis()
-
-    istpian.fire()
+                    )
+    
+   
+    if type(env.get_val('subjects')) == list:
+        for subject in env.get_val('subjects'):
+            istpian.subject = subject
+            istpian.fire()
+    
+    else:
+        istpian.subject = env.get_val('subjects')
+        istpian.fire()
  
 
 if __name__ == "__main__":
