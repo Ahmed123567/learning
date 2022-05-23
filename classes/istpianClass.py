@@ -77,11 +77,11 @@ class Istpian():
             self.urlreq = self.url + '/' + self.subject
             self.deal_with_soup()
             self.data = self.genrate_input_data()
-            
+
             r = requests.post(self.action, data=self.data, cookies=self.cookie,  verify=False)
             # print(r.text)
            
-            print(GREEN + "Istpian Is Completed Successfully" + ENDC)
+            print(GREEN +f"Istpian Is for {self.subject} Completed Successfully" + ENDC)
         except  Exception as e:
             print(e)
             exit()

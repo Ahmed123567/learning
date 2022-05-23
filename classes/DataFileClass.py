@@ -4,7 +4,7 @@ ENDC = '\033[0m'
 
 
 
-class Env():
+class DataFile():
 
     def __init__(self,path):
         self.path = path

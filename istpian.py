@@ -1,7 +1,7 @@
 import argparse
 from bs4 import BeautifulSoup
 from classes.cookieClass import Cookies
-from classes.envClass import Env
+from classes.DataFileClass import DataFile
 from classes.istpianClass import Istpian
 
 
@@ -39,7 +39,7 @@ def start():
     banner()
     args = arguments()
 
-    env = Env(args.r)
+    env = DataFile(args.r)
     print(env.get_all())
     CookieObject = Cookies(cookie = env.get_val('cookie'))
     
