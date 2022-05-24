@@ -84,9 +84,9 @@ class DataFile():
 
         for key in self.__data:
             if type(self.__data[key]) == list :
-                text_file.write(key  +  ':'  +  ','.join(self.__data[key])  + '\n')                
+                text_file.write(key  +  ':='  +  ','.join(self.__data[key])  + '\n')                
             else:
-                text_file.write(key + ':' + self.__data[key] + '\n')
+                text_file.write(key + ':=' + self.__data[key] + '\n')
 
             
 
