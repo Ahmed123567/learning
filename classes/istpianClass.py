@@ -25,7 +25,7 @@ class Istpian():
        
         self.action = ''
         self.input_field_list = []
-        self.token = ''
+        self.hidden = ''
         self.data = {}
 
 
@@ -48,11 +48,11 @@ class Istpian():
         
         soup = BeautifulSoup(self.get_the_page_content(), 'html.parser')
 
-        self.input_field_list = soup.find_all('input', type='checkbox')
-        
-        self.action = soup.find('input', type='checkbox').parent.get('action')
+        self.input_field_list = soup.find_all('input', type='radio')
 
-        self.token =  soup.find('form' , action=self.action).find('input',{"name":"_token"})
+        self.action = self.input_field_list[5].find_previous('form').get('action')
+    
+        self.hidden = self.input_field_list[5].find_previous('form').findChildren('input', type='hidden')
 
   
     # genrate the the data dictionary to be submited 
@@ -67,7 +67,8 @@ class Istpian():
             else:
                 data[input.get('name')] = self.input_random_values
                
-        data['_token'] = self.token.get('value')
+        for input in self.hidden:
+            data[input.get('name')] = input.get('value')
 
         return data
 
@@ -77,10 +78,10 @@ class Istpian():
             self.urlreq = self.url + '/' + self.subject
             self.deal_with_soup()
             self.data = self.genrate_input_data()
-
+            print(self.urlreq)
             r = requests.post(self.action, data=self.data, cookies=self.cookie,  verify=False)
             # print(r.text)
-           
+            print(r.status_code)
             print(GREEN +f"Istpian Is for {self.subject} Completed Successfully" + ENDC)
         except  Exception as e:
             print(e)

@@ -11,7 +11,7 @@ class DataFile():
         self.__data = self.__read_file()
 
    #read the whole file and cache it in the self.__data dictionary
-   # executed when the object is created
+   #executed when the object is created
     def __read_file(self):
       
         try:
@@ -51,7 +51,7 @@ class DataFile():
     def get_val(self, varname): 
         
         if self.__data.get(varname) == None:
-            print(f'{RED}Errore at env.get_val({varname}) {varname} key dosent exist{ENDC}')
+            print(f'{RED}Errore key {varname} key dosent exist{ENDC}')
             exit()
 
         return self.__data.get(varname)
@@ -74,6 +74,7 @@ class DataFile():
 
    # write the self.__data dictionary in the file
    #can be chained to delete and update methods
+   #will remove all the comments in the file
    # ex:=>(  file.delete('name').save()  )
     def save(self):
         try:
