@@ -24,8 +24,8 @@ class Istpian():
         self.input_random_values = options
        
         self.action = ''
-        self.input_field_list = []
-        self.hidden = ''
+        self.radio_inputs = []
+        self.hidden_inputs = ''
         self.data = {}
 
 
@@ -48,18 +48,18 @@ class Istpian():
         
         soup = BeautifulSoup(self.get_the_page_content(), 'html.parser')
 
-        self.input_field_list = soup.find_all('input', type='radio')
+        self.radio_inputs = soup.find_all('input', type='radio')
 
-        self.action = self.input_field_list[5].find_previous('form').get('action')
+        self.action = self.radio_inputs[5].find_previous('form').get('action')
     
-        self.hidden = self.input_field_list[5].find_previous('form').findChildren('input', type='hidden')
+        self.hidden_inputs = self.radio_inputs[5].find_previous('form').findChildren('input', type='hidden')
 
   
     # genrate the the data dictionary to be submited 
     def genrate_input_data(self):
         data = {}
 
-        for input in self.input_field_list:
+        for input in self.radio_inputs:
             if type(self.input_random_values) == list:
                 rand_idx = random.randrange(len(self.input_random_values))
            
@@ -67,7 +67,7 @@ class Istpian():
             else:
                 data[input.get('name')] = self.input_random_values
                
-        for input in self.hidden:
+        for input in self.hidden_inputs:
             data[input.get('name')] = input.get('value')
 
         return data
