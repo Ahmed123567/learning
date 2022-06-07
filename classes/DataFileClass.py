@@ -10,8 +10,6 @@ class DataFile():
     def __init__(self,path):
         self.path = path
         self.__data = self.__read_file()
-        self.dictionary = {}
-        self.keys = []
 
    #read the whole file and cache it in the self.__data dictionary
    #executed when the object is created
@@ -36,29 +34,7 @@ class DataFile():
         
         return var_and_val
 
-    def dict_algo(self,value):
-        if value[0] == '{' and value[-1] == '}' and value.count('{')==1: 
-            dictionary2 = {}
-            dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
-            i=0
-            d={}
-            for key in keys[::-1]:
-                if i == 0:
-                    dictionary[key] = dictionary2
-                else:    
-                    dictionary[key] = d[f'di{i}'] 
-                
-                i = i+1
-                d[f"di{i}"] = dictionary
-         
-        elif value[0] == '{' and value[-1] == '}':
-            keys.append(value[1:-1].split(':',1)[0])
-
-            dict_algo(value[1:-1].split(':',1)[1])
-
-        return dictionary[keys[0]]
-
-
+      
     def __check_for_list(self, value):
         
         if value.find(',') != -1:
@@ -112,82 +88,74 @@ class DataFile():
                 text_file.write(key  +  ':='  +  ','.join(self.__data[key])  + '\n')                
             else:
                 text_file.write(key + ':=' + self.__data[key] + '\n')
-
-            
 dictionary = {}
 keys = []
-# def dict_algo(value):
-#     if value[0] == '{' and value[-1] == '}' and value.count('{')==1 and len(keys) == 0:
-#         dictionary2 = {}
-#         dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
-#         return dictionary2
-
-#     if value[0] == '{' and value[-1] == '}' and value.count('{')==1: 
-#         dictionary2 = {}
-#         dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
-#         i=0
-#         d={}
-#         for key in keys[::-1]:
-#             if i == 0:
-#                 dictionary[key] = dictionary2
-#             else:    
-#                 dictionary[key] = d[f'di{i}'] 
-              
-#             i = i+1
-#             d[f"di{i}"] = dictionary
-         
-#     elif value[0] == '{' and value[-1] == '}':
-#         keys.append(value[1:-1].split(':',1)[0])
-
-#         dict_algo(value[1:-1].split(':',1)[1])
-#     print(dictionary[keys[0]])
-#     return dictionary[keys[0]]
-
-# def parentDict(value):
-#     for i in range(len(value.split(','))):
-#         print(i)
-#         print(len(value.split(','))-1)
-#         if i == 0:
-#            mainDict = dict_algo(value.split(',')[i].replace(' ', '') + '}')
-#            print('this main one', mainDict)
-#         elif i != len(value.split(',')) -1:
-#             mainDict.update(dict_algo('{'+ value.split(',')[i].replace(' ', '')+ '}'))
-#             print('this mian two',mainDict)
-#         else:
-#             print('{' + value.split(',')[i].replace(' ', ''))
-#             mainDict.update(dict_algo('{' + value.split(',')[i].replace(' ', '')))
-#             print('this main three', mainDict)
-
-#     return mainDict        
-
-# print(dict_algo("{name:{age:{hello:hell}}}")) 
-# dicti = parentDict("{CS:programing,Mc:{math:{jfd:ejf}}, cc:noting}")
-
+            
 def dict_algo(value):
-        if value[0] == '{' and value[-1] == '}' and value.count('{')==1: 
-            dictionary2 = {}
-            dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
-            i=0
-            d={}
-            for key in keys[::-1]:
-                if i == 0:
-                    dictionary[key] = dictionary2
-                else:    
-                    dictionary[key] = d[f'di{i}'] 
+   
+
+
+    if value[0] == '{' and value[-1] == '}' and value.count('{')==1 and len(keys) == 0:
+        dictionary2 = {}
+        dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
+        return dictionary2
+
+    if value[0] == '{' and value[-1] == '}' and value.count('{')==1: 
+        dictionary2 = {}
+        dictionary2[value[1:-1].split(':')[0]] =  value[1:-1].split(':')[1]
+        
+        i=0
+        dicts={}
+        print(keys[::-1])
+        for key in keys[::-1]:
+            if i == 0:
+                dictionary[key] = dictionary2
+                i = i+1
+                dicts[f"di{i}"] = dictionary.copy() 
+            else:    
+                dictionary[key] = dicts[f'di{i}']
                 
                 i = i+1
-                d[f"di{i}"] = dictionary
-         
-        elif value[0] == '{' and value[-1] == '}':
-            keys.append(value[1:-1].split(':',1)[0])
+                val = dictionary[key]
+                dictionary.clear()
+                dictionary[key] = val
 
-            dict_algo(value[1:-1].split(':',1)[1])
+                dicts[f"di{i}"] = dictionary.copy()
+            
+                 
+    elif value[0] == '{' and value[-1] == '}':
+     
+        keys.append(value[1:-1].split(':',1)[0])
+        
+        dict_algo(value[1:-1].split(':',1)[1])
+  
+    return dictionary
 
-        return dictionary[keys[0]]
+
+def parantDict(value):
+    for i in range(len(value.split(','))):
+       
+        print(value.split(',')[i])
+
+        if i == 0:
+            mainDict = dict_algo(value.split(',')[i].replace(' ','') + '}' )
+        elif i != len(value.split(',')) - 1 :
+            dictvar = dict_algo('{' + value.split(',')[i].replace(' ','') + '}')
+            # print(dictvar)
+            mainDict = {**mainDict , **dict_algo('{' + value.split(',')[i].replace(' ','') + '}')}
+        else:
+            mainDict = {**mainDict , **dict_algo( '{'+ value.split(',')[i].replace(' ',''))}
+            print(mainDict)
+
+    return mainDict
+
+# icti = dict_algo("{name:{age:{hello:{ae:{ni:{hhk:{haapppy:verrrrys}}}}}}}")
 
 
-
-dicti = dict_algo("{name:{age:{hello:hell}}}")
-print(dicti['name']['name']['name']['name']['name']['name']['name'])
 
 # print('final',dicti)
+# dictionary.clear()
+# print(dict_algo('{more:{name:{gret:hello}}'))
+parantDict("{CS:programing,name:{age:{hello:{ae:{ni:{hhk:{haapppy:verrrrys}}}}}} ,fapl:{soL:fsa}}")
+
+# print('final result == ', dicti)
