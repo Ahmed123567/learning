@@ -27,6 +27,8 @@ def banner():
     """ + ENDC)
 
 
+
+
 def arguments():
     parser = argparse.ArgumentParser(description='file istpian form')
    
@@ -35,26 +37,26 @@ def arguments():
     return parser.parse_args()
 
 
+
+
 def start():
     banner()
     args = arguments()
 
     env = DataFile(args.r)
-    print(env.get_all())
+    
     CookieObject = Cookies(cookie = env.get_val('cookie'))
     
-    istpian = Istpian(
-                        cookie=CookieObject.cookie_formate() ,
-                        url=env.get_val('url'),
-                        options=env.get_val('options')
-                    )
+    istpian = Istpian(cookie=CookieObject.cookie_formate(),  url=env.get_val('url'), options=env.get_val('options') )
     
-   
+
+    # fire the istpian for each subject if it is alist of subjects
     if type(env.get_val('subjects')) == list:
         for subject in env.get_val('subjects'):
             istpian.subject = subject
             istpian.fire()
-    
+
+    # if it is only one subject
     else:
         istpian.subject = env.get_val('subjects')
         istpian.fire()
