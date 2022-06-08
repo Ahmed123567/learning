@@ -49,6 +49,7 @@ def start():
     
     istpian = Istpian(cookie=CookieObject.cookie_formate(),  url=env.get_val('url'), options=env.get_val('options') )
     
+    print(env.get_all())
 
     # fire the istpian for each subject if it is alist of subjects
     if type(env.get_val('subjects')) == list:
