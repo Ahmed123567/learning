@@ -1,17 +1,16 @@
 
 RED = '\033[91m'
+GREEN = '\033[92m'
+BOLD = '\033[1m'
 ENDC = '\033[0m'
 
 import json
-
+import re
+import sys,os
 class DataFile():
 
     def __init__(self,path):
-        self.path = path
-        self.dictionary = {}
-        self.keys = []
-        self.split_by = '},'
-        self.bracket = '}}'
+        self.__path = path
         self.__data = self.__read_file()
        
    #read the whole file and cache it in the self.__data dictionary
@@ -19,50 +18,59 @@ class DataFile():
     def __read_file(self):
       
         try:
-            text_file = open(self.path, 'r')
-        
-            lines = text_file.readlines()
-            text_file.close()
-
-            var_and_val = {}
-            
-            
-            for line in lines:
-                if line.find(':=') != -1 :
-                    var_and_val[line.split(':=',1)[0]] =self.__check_for_list_or_dict(line.split(':=',1)[1].replace('\n',''))
-            
+            text_file = open(self.__path, 'r')
         except Exception as e :
-            print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
+            print("Exception : ", e)
             exit()
+        
+        lines = text_file.readlines()
+        text_file.close()
+
+        var_and_val = {}
+        
+        
+        for line in lines:
+            if line.find(':=') != -1 :
+                var_and_val[line.split(':=',1)[0]] =self.__check_for_types(line.split(':=',1)[1].replace('\n',''))
+        
+       
         
         return var_and_val
 
     def json(self, value):
         return json.loads(value)
 
-    
-    def __check_for_list_or_dict(self, value):
+    #this method check wether the value is 
+    #dictionary or list or int or string
+    def __check_for_types(self, value):
 
-        if value.find('{') != -1:
-            value = json.loads(value)
-        elif value.find(',') != -1:
-            value = value.split(',')
+      
+        if re.search('\{(.+:.+,?)+\}',value):
+            return json.loads(re.search('{(.+:.+,?)+}',value).group())
+
+
+        if re.search('\[.+,.+\]', value):
+            dictstr = '{"list" :' + re.search('\[.+,.+\]', value).group() + "}"
+            return json.loads(dictstr)['list']
+        
+        try:
+            return int(value)
+        except Exception:
+            return value
+
   
-        return value
 
    
     def get_all(self):
 
         return self.__data
 
-
-
+    #return None if the the varname dosent exist
     def get_val(self, varname): 
-        
-        if self.__data.get(varname) == None:
-            print(f'{RED}Errore key {varname} key dosent exist{ENDC}')
-            exit()
-
+     
         return self.__data.get(varname)
         
 
@@ -80,21 +88,32 @@ class DataFile():
         
         return self
 
+
+    def copy_to(self, file_path):
+        original_path = self.__path
+        self.__path = file_path
+        self.save()
+        self.__path = original_path
+
+
    # write the self.__data dictionary in the file
    # can be chained to delete and update methods
-   # Note:=> will remove all the comments in the file#
    # ex:=>(  file.delete('name').save()  )
+   # Note:=> will remove all the comments in the file#
     def save(self):
-        try:
-            text_file = open(self.path, 'w')
-        except Exception as e:
-            print(e) 
-            exit()
-
+      
+        text_file = open(self.__path, 'w')
+          
         for key in self.__data:
             if type(self.__data[key]) == list :
-                text_file.write(key  +  ':='  +  ','.join(self.__data[key])  + '\n')                
-            else:
-                text_file.write(key + ':=' + self.__data[key] + '\n')
+                dictlist = {'list' : self.__data[key]}
+                text_file.write(key  +  ':='  + json.dumps(dictlist).replace('{"list":' , '').strip('}') + '\n')                
+                continue
+
+            if type(self.__data[key]) == dict:
+                text_file.write(key + ':=' + json.dumps(self.__data[key]) + '\n')
+                continue
+            
+            text_file.write(key + ':=' + str(self.__data[key]) + '\n')
 
 

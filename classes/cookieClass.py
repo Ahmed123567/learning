@@ -1,8 +1,10 @@
 import time
-
+import sys,os
 
 RED = '\033[91m'
 ENDC = '\033[0m'
+GREEN = '\033[92m'
+
 
 
 class Cookies():
@@ -14,8 +16,18 @@ class Cookies():
 
     # takes input at this fomrate 'name=ahmed' return [ 'name' , 'ahmed']
     def __cookie_unit(self,cookie):
-        cookie_name = cookie.split('=',1)[0]
-        cookie_value = cookie.split('=',1)[1]
+        try:
+            
+            cookie_name = cookie.split('=',1)[0]
+            cookie_value = cookie.split('=',1)[1]
+
+        except Exception as e :
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
+            print("Exception : ", e)
+            print(f'{GREEN}Cookie Formate : name=aname;age=31')
+            exit()
 
         cookie_list = [cookie_name, cookie_value]
         return cookie_list
@@ -27,11 +39,11 @@ class Cookies():
             cookie_file = open(self.path, 'r')
             self.cookie = cookie_file.read().replace("\n", "")
 
-        except (FileNotFoundError , TypeError) as e :
-            if self.path == None:
-               print(RED+"Please provide a Cookie or Path"+ENDC)
-            else: 
-                print(f'{RED}Error: Path {self.path} dosnt exsit {ENDC}')
+        except Exception as e :
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
+            print("Exception : ", e)
             exit()
 
         self.cookie_array()
@@ -55,7 +67,9 @@ class Cookies():
         if self.cookie == None:
            self.__cookie_file()
         
+      
         cookies = self.cookie.split(';')
+      
       
         cookie_list = []
         for cookie in cookies : 
