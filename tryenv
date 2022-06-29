@@ -5,7 +5,7 @@ ints:= [[1, 2], [12, 41]]
 strings:= [["name", "age"], "no"]
 string:=my name
 int:=2
-subjects:=["/sub1","/sub2","/sub3"]
+subjects:=["/sub1","/sub2"]
 jsondict:=dslfjasldfjlsdjfl {"name":"ahmed" , "age" : 21 , "lang" : ["python" , "php"  ]}sdfsdf
 
 

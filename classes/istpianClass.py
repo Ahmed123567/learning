@@ -4,10 +4,9 @@ import requests
 import sys, os
 
 
-
 try:
     from bs4 import BeautifulSoup
-except Exception:
+except ModuleNotFoundError:
     os.system('pip3 install bs4')
     from bs4 import BeautifulSoup
 

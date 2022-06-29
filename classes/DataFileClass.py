@@ -34,7 +34,7 @@ class DataFile():
         
         
         for line in lines:
-            if line.find(':=') != -1 :
+            if line.find(':=') != -1 and line.find('#') == -1 :
                 var_and_val[line.split(':=',1)[0]] =self.__check_for_types(line.split(':=',1)[1].replace('\n',''))
         
         
