@@ -7,14 +7,15 @@ ENDC = '\033[0m'
 import json
 import re
 import sys,os
+
 class DataFile():
 
     def __init__(self,path):
         self.__path = path
         self.__data = self.__read_file()
        
-   #read the whole file and cache it in the self.__data dictionary
-   #executed when the object is created
+    #read the whole file and cache it in the self.__data dictionary
+    #executed when the object is created
     def __read_file(self):
       
         try:
@@ -23,7 +24,7 @@ class DataFile():
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
-            print("Exception : ", e)
+            print(f"Exception : {e} {ENDC}")
             exit()
         
         lines = text_file.readlines()
@@ -36,12 +37,9 @@ class DataFile():
             if line.find(':=') != -1 :
                 var_and_val[line.split(':=',1)[0]] =self.__check_for_types(line.split(':=',1)[1].replace('\n',''))
         
-       
         
         return var_and_val
 
-    def json(self, value):
-        return json.loads(value)
 
     #this method check wether the value is 
     #dictionary or list or int or string
@@ -61,8 +59,6 @@ class DataFile():
         except Exception:
             return value
 
-  
-
    
     def get_all(self):
 
@@ -81,7 +77,9 @@ class DataFile():
         
         return self
    
- 
+    #update and delete methods has to be chained with save method to
+    #make changes in the datafile
+    #if you didn't chain it will only change the value in the data dict and wont be saved 
     def delete(self , var):
         
         self.__data.pop(var ,None)

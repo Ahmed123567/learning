@@ -1,5 +1,4 @@
 import argparse
-from bs4 import BeautifulSoup
 from classes.cookieClass import Cookies
 from classes.DataFileClass import DataFile
 from classes.istpianClass import Istpian
@@ -7,6 +6,7 @@ from classes.istpianClass import Istpian
 
 HEADER = '\033[95m'
 GREEN = '\033[92m'
+DARK = '\033[90m'
 RED = '\033[91m'
 GRAY = '\033[30m'
 BOLD = '\033[1m'
@@ -16,21 +16,21 @@ ENDC = '\033[0m'
 def banner():
     print(
         HEADER +
-        """
-        ██╗███████╗████████╗██████╗ ██╗ █████╗ ███╗   ██╗
-        ██║██╔════╝╚══██╔══╝██╔══██╗██║██╔══██╗████╗  ██║
-        ██║███████╗   ██║   ██████╔╝██║███████║██╔██╗ ██║
+       f"""
+       {GRAY} ██╗███████╗████████╗██████╗ ██╗ █████╗ ███╗   ██╗
+      {DARK}  ██║██╔════╝╚══██╔══╝██╔══██╗██║██╔══██╗████╗  ██║
+        ██║███████╗   ██║   ██████╔╝██║███████║██╔██╗ ██║ 
         ██║╚════██║   ██║   ██╔═══╝ ██║██╔══██║██║╚██╗██║
-        ██║███████║   ██║   ██║     ██║██║  ██║██║ ╚████║
-        ╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
-        """+GREEN+"""made by ...
+    {GRAY}    ██║███████║   ██║   ██║     ██║██║  ██║██║ ╚████║
+        ╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝                    
+        """+BOLD+GREEN+"""made by ...
     """ + ENDC)
 
 
 
 
 def arguments():
-    parser = argparse.ArgumentParser(description='file istpian form')
+    parser = argparse.ArgumentParser(description='finish the unvirsty istpian')
    
     parser.add_argument('-r', help="please enter the env file path", required=True)
 

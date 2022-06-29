@@ -67,9 +67,7 @@ class Cookies():
         if self.cookie == None:
            self.__cookie_file()
         
-      
         cookies = self.cookie.split(';')
-      
       
         cookie_list = []
         for cookie in cookies : 
@@ -79,12 +77,6 @@ class Cookies():
 
 
     def cookie_formate(self):
-    
-        cookie_array = self.cookie_array()
 
-        cookies = self.__cookie_dictionary(cookie_array)
-
-        return cookies
-
-
+        return self.__cookie_dictionary(self.cookie_array())
 
