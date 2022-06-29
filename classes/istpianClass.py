@@ -3,12 +3,28 @@ import random
 import requests
 import sys, os
 
+#this function can has any number of import statment 
+#if the module is not installed it will install it
+#you has to define the module name as global to make usable in the all code
+keyboard_Interrupt = []
+def import_or_install():
+    try:
+        global BeautifulSoup
+        from bs4 import BeautifulSoup
+        
+    except ModuleNotFoundError as e:
+      
+        if e.msg.split(' ')[-1] in keyboard_Interrupt:
+          exit()
+       
+        print(e)
+        print(f"installing {e.msg.split(' ')[-1]}...")
+        keyboard_Interrupt.append(e.msg.split(' ')[-1])
 
-try:
-    from bs4 import BeautifulSoup
-except ModuleNotFoundError:
-    os.system('pip3 install bs4')
-    from bs4 import BeautifulSoup
+        os.system('pip3 install ' + e.msg.split(' ')[-1])
+        import_or_install()
+
+import_or_install()
 
 
 
