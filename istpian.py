@@ -53,14 +53,13 @@ def start():
 
     # fire the istpian for each subject if it is alist of subjects
     if type(env.get_val('subjects')) == list:
-        print('sdf')
         for subject in env.get_val('subjects'):
-            istpian.subject = subject
+            istpian.setSubject(subject)
             istpian.fire()
 
     # if it is only one subject
     else:
-        istpian.subject = env.get_val('subjects')
+        istpian.setSubject(env.get_val('subjects'))
         istpian.fire()
  
 

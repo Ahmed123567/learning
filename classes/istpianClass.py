@@ -13,7 +13,7 @@ def import_or_install():
         from bs4 import BeautifulSoup
         
     except ModuleNotFoundError as e:
-      
+        #if the pip install is colsed using ctrl+C will exit the code
         if e.msg.split(' ')[-1] in keyboard_Interrupt:
           exit()
        
@@ -40,25 +40,25 @@ ENDC = '\033[0m'
 class Istpian():
     
     def __init__(self ,cookie, url,options):
-        self.cookie = cookie
-        self.url = url
+        self.__cookie = cookie
+        self.__url = url
       
-        self.subject = ''
-        self.urlreq = ''
+        self.__subject = ''
+        self.__urlreq = ''
         
-        self.input_random_values = options
+        self.__input_random_values = options
        
-        self.action = ''
-        self.radio_inputs = []
-        self.hidden_inputs = ''
-        self.data = {}
+        self.__action = ''
+        self.__radio_inputs = []
+        self.__hidden_inputs = ''
+        self.__data = {}
 
 
 
    
     # get the page content and put it in the soup
     def get_the_page_content(self):
-        response = requests.get(self.urlreq, cookies=self.cookie , verify=False)
+        response = requests.get(self.__urlreq, cookies=self.__cookie , verify=False)
         return response.text
 
 
@@ -69,20 +69,20 @@ class Istpian():
         try:
             soup = BeautifulSoup(self.get_the_page_content(), 'html.parser')
 
-            self.radio_inputs = soup.find_all('input', type='radio')
+            self.__radio_inputs = soup.find_all('input', type='radio')
 
-            self.action = self.radio_inputs[15].find_previous('form').get('action')
+            self.__action = self.__radio_inputs[5].find_previous('form').get('action')
 
-            self.hidden_inputs = self.radio_inputs[15].find_previous('form').findChildren('input', type='hidden')
+            self.__hidden_inputs = self.__radio_inputs[5].find_previous('form').findChildren('input', type='hidden')
 
-            self.radio_inputs = self.radio_inputs[15].find_previous('form').findChildren('input', type='radio')
+            self.__radio_inputs = self.__radio_inputs[5].find_previous('form').findChildren('input', type='radio')
       
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
             print("Exception : ", e)
-            print(f"{GREEN}Are you sure you entered the write url [the url you enterd is '{self.urlreq}']{ENDC}")
+            print(f"{GREEN}Are you sure you entered the write url [the url you enterd is '{self.__urlreq}']{ENDC}")
             exit()
 
   
@@ -90,33 +90,36 @@ class Istpian():
     def genrate_input_data(self):
         data = {}
 
-        for input in self.radio_inputs:
-            if type(self.input_random_values) == list:
-                rand_idx = random.randrange(len(self.input_random_values))
-                data[input.get('name')] = self.input_random_values[rand_idx]
+        for input in self.__radio_inputs:
+            if type(self.__input_random_values) == list:
+                rand_idx = random.randrange(len(self.__input_random_values))
+                data[input.get('name')] = self.__input_random_values[rand_idx]
                 continue
             
-            data[input.get('name')] = self.input_random_values
+            data[input.get('name')] = self.__input_random_values
                
-        for input in self.hidden_inputs:
+        for input in self.__hidden_inputs:
             data[input.get('name')] = input.get('value')
 
         return data
 
   
+    def setSubject(self,subname):
+        self.__subject = subname
+
     #load the data before fire
     def load(self):
-        self.urlreq = self.url + self.subject
+        self.__urlreq = self.__url + self.__subject
         self.deal_with_soup()
-        self.data = self.genrate_input_data()
-        print(self.data)
+        self.__data = self.genrate_input_data()
+        
 
     
     # start the istpian from here
     def fire(self):
         self.load()
-        r = requests.post(self.action, data=self.data, cookies=self.cookie,  verify=False)
+        r = requests.post(self.__action, data=self.__data, cookies=self.__cookie,  verify=False)
         # print(r.text)
         print(r.status_code)
-        print(GREEN +f"Istpian Is for {self.subject} Completed Successfully" + ENDC)
+        print(GREEN +f"Istpian Is for {self.__subject} Completed Successfully" + ENDC)
         
