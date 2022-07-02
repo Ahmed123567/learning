@@ -45,12 +45,12 @@ def start():
 
     env = DataFile(args.r)
     
-    CookieObject = Cookies(cookie = env.get_val('cookie'))
+    CookieObject = Cookies(cookie=env.get_val('cookie'))
     
     istpian = Istpian(cookie=CookieObject.cookie_formate(),  url=env.get_val('url'), options=env.get_val('options') )
     
-    print(env.get_all())
-
+    # print(env.get_all())
+    print(CookieObject.cookie_formate())
     # fire the istpian for each subject if it is alist of subjects
     if type(env.get_val('subjects')) == list:
         for subject in env.get_val('subjects'):
@@ -61,6 +61,10 @@ def start():
     else:
         istpian.setSubject(env.get_val('subjects'))
         istpian.fire()
+
+    # radio_list = [{'name':'ahmed'}, {'name':'omar'},{'name':'said'}]
+    # hidden_list = [{'name':'_token', 'value':'this secret'}]
+    # print(istpian.genrate_input_data( [1,2,3,4,5,6], radio_list, hidden_list))
  
 
 if __name__ == "__main__":

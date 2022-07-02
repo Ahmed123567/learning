@@ -42,12 +42,10 @@ class Istpian():
     def __init__(self ,cookie, url,options):
         self.__cookie = cookie
         self.__url = url
-      
+        self.__options = options
+  
         self.__subject = ''
-        self.__urlreq = ''
-        
-        self.__input_random_values = options
-       
+        self.__urlreq = ''       
         self.__action = ''
         self.__radio_inputs = []
         self.__hidden_inputs = ''
@@ -57,17 +55,17 @@ class Istpian():
 
    
     # get the page content and put it in the soup
-    def get_the_page_content(self):
-        response = requests.get(self.__urlreq, cookies=self.__cookie , verify=False)
+    def get_the_page_content(self, url : str, cookie : str) -> str:
+        response = requests.get(url, cookies=cookie , verify=False)
         return response.text
 
 
     # get the page html and use beatifulSoup to access the content of the page
     # get the all input fieldes and put it into the self.input_field_list
     # get the form action of the istpian and put it into self.action 
-    def deal_with_soup(self):
+    def __deal_with_soup(self):
         try:
-            soup = BeautifulSoup(self.get_the_page_content(), 'html.parser')
+            soup = BeautifulSoup(self.get_the_page_content(self.__urlreq, self.__cookie), 'html.parser')
 
             self.__radio_inputs = soup.find_all('input', type='radio')
 
@@ -86,38 +84,44 @@ class Istpian():
             exit()
 
   
-    # genrate the the data dictionary to be submited 
-    def genrate_input_data(self):
+    # genrate the the data dictionary to be submited
+    # radio_inputes is alist of beatifulsoup input objects
+    # or list of dicts with the key "name" ex:=> [{'name':'the input name'}, {'name':'the input name'},{'name':'the input name'}] 
+    # for hidden_inputs ex:=> [{'name':'hidden1','value':2},{'name':'hidden2', 'value':4}]
+    def genrate_input_data(self,options, radio_inputs : list, hidden_inputs='')->dict:
         data = {}
 
-        for input in self.__radio_inputs:
-            if type(self.__input_random_values) == list:
-                rand_idx = random.randrange(len(self.__input_random_values))
-                data[input.get('name')] = self.__input_random_values[rand_idx]
+        for input in radio_inputs:
+            #isinstance check if options is list type
+            if isinstance(options, list):
+                rand_idx = random.randrange(len(options))
+                data[input.get('name')] =options[rand_idx]
                 continue
             
-            data[input.get('name')] = self.__input_random_values
+            data[input.get('name')] = options
                
-        for input in self.__hidden_inputs:
+        
+        for input in hidden_inputs:
             data[input.get('name')] = input.get('value')
 
         return data
 
   
-    def setSubject(self,subname):
+    def setSubject(self,subname : str):
         self.__subject = subname
 
     #load the data before fire
-    def load(self):
+    def __load(self):
         self.__urlreq = self.__url + self.__subject
-        self.deal_with_soup()
-        self.__data = self.genrate_input_data()
-        
+        self.__deal_with_soup()
+        self.__data = self.genrate_input_data(self.__options, self.__radio_inputs, self.__hidden_inputs)
+        self.__hidden_inputs=''
+        print(self.__data)
 
     
     # start the istpian from here
     def fire(self):
-        self.load()
+        self.__load()
         r = requests.post(self.__action, data=self.__data, cookies=self.__cookie,  verify=False)
         # print(r.text)
         print(r.status_code)

@@ -10,16 +10,16 @@ import sys,os
 
 class DataFile():
 
-    def __init__(self,path):
+    def __init__(self,path : str):
         self.__path = path
-        self.__data = self.__read_file()
+        self.__data = self.read_file(self.__path)
        
     #read the whole file and cache it in the self.__data dictionary
     #executed when the object is created
-    def __read_file(self):
+    def read_file(self,path : str):
       
         try:
-            text_file = open(self.__path, 'r')
+            text_file = open(path, 'r')
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -65,13 +65,13 @@ class DataFile():
         return self.__data
 
     #return None if the the varname dosent exist
-    def get_val(self, varname): 
+    def get_val(self, varname:str): 
      
         return self.__data.get(varname)
         
 
     # insert if not exist update if exist 
-    def update(self, var , val):
+    def update(self, var : str , val):
 
         self.__data[var] = val 
         
@@ -80,14 +80,14 @@ class DataFile():
     #update and delete methods has to be chained with save method to
     #make changes in the datafile
     #if you didn't chain it will only change the value in the data dict and wont be saved 
-    def delete(self , var):
+    def delete(self , var : str):
         
         self.__data.pop(var ,None)
         
         return self
 
 
-    def copy_to(self, file_path):
+    def copy_to(self, file_path : str):
         original_path = self.__path
         self.__path = file_path
         self.save()

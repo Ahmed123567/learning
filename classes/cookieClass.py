@@ -11,11 +11,11 @@ class Cookies():
 
 
     def __init__(self,cookie=None, path=None):
-        self.cookie = cookie
-        self.path = path
+        self.__cookie = cookie
+        self.__path = path
 
     # takes input at this fomrate 'name=ahmed' return [ 'name' , 'ahmed']
-    def __cookie_unit(self,cookie):
+    def cookie_unit(self,cookie: str) -> list :
         try:
             
             cookie_name = cookie.split('=',1)[0]
@@ -34,10 +34,12 @@ class Cookies():
 
 
     # read the cookie from the cookie.txt file and send to cookie_array method
-    def __cookie_file(self):
+    # this method works only if the cookie is not provided and the path is provided
+    def cookie_file(self,path:str) -> str:
         try:
-            cookie_file = open(self.path, 'r')
-            self.cookie = cookie_file.read().replace("\n", "")
+            
+            # read the cookie form the file
+            return open(path, 'r').read().replace("\n", "")
 
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -46,11 +48,10 @@ class Cookies():
             print("Exception : ", e)
             exit()
 
-        self.cookie_array()
-
+        
 
     # take the inpute as ['name', 'ahmed' , 'job', 'eng' ] return {'name':'ahmed' , 'job':'eng' }
-    def __cookie_dictionary(self,cookie_array):
+    def cookie_dictionary(self,cookie_array : list) -> dict:
        
         cookies = {}
         cookie_array_len = len(cookie_array) 
@@ -62,21 +63,22 @@ class Cookies():
 
 
     # takes the whole cookie srting 'name=ahmed;job=eng' return ['name', 'ahmed' , job, 'eng']
-    def cookie_array(self):
+    def cookie_array(self, cookie : str) -> list:
     
-        if self.cookie == None:
-           self.__cookie_file()
+        if cookie == None:
+           cookie = self.cookie_file(self.__path)
         
-        cookies = self.cookie.split(';')
+        cookies = cookie.split(';')
       
         cookie_list = []
         for cookie in cookies : 
-            cookie_list += self.__cookie_unit(cookie)
+            cookie_list += self.cookie_unit(cookie)
 
         return cookie_list
 
-
+    #this where you should start reading the code
     def cookie_formate(self):
-
-        return self.__cookie_dictionary(self.cookie_array())
+        cookie_list = self.cookie_array(self.__cookie)
+    
+        return self.cookie_dictionary(cookie_list)
 
