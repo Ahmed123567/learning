@@ -52,7 +52,7 @@ def start():
     # print(env.get_all())
     print(CookieObject.cookie_formate())
     # fire the istpian for each subject if it is alist of subjects
-    if type(env.get_val('subjects')) == list:
+    if isinstance(env.get_val('subjects'), list):
         for subject in env.get_val('subjects'):
             istpian.setSubject(subject)
             istpian.fire()

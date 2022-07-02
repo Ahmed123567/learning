@@ -15,7 +15,7 @@ class Cookies():
         self.__path = path
 
     # takes input at this fomrate 'name=ahmed' return [ 'name' , 'ahmed']
-    def cookie_unit(self,cookie: str) -> list :
+    def cookie_unit(self,cookie):
         try:
             
             cookie_name = cookie.split('=',1)[0]
@@ -35,7 +35,7 @@ class Cookies():
 
     # read the cookie from the cookie.txt file and send to cookie_array method
     # this method works only if the cookie is not provided and the path is provided
-    def cookie_file(self,path:str) -> str:
+    def cookie_file(self,path):
         try:
             
             # read the cookie form the file
@@ -51,7 +51,7 @@ class Cookies():
         
 
     # take the inpute as ['name', 'ahmed' , 'job', 'eng' ] return {'name':'ahmed' , 'job':'eng' }
-    def cookie_dictionary(self,cookie_array : list) -> dict:
+    def cookie_dictionary(self,cookie_array):
        
         cookies = {}
         cookie_array_len = len(cookie_array) 
@@ -63,7 +63,7 @@ class Cookies():
 
 
     # takes the whole cookie srting 'name=ahmed;job=eng' return ['name', 'ahmed' , job, 'eng']
-    def cookie_array(self, cookie : str) -> list:
+    def cookie_array(self, cookie):
     
         if cookie == None:
            cookie = self.cookie_file(self.__path)

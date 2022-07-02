@@ -10,13 +10,13 @@ import sys,os
 
 class DataFile():
 
-    def __init__(self,path : str):
+    def __init__(self,path):
         self.__path = path
         self.__data = self.read_file(self.__path)
        
     #read the whole file and cache it in the self.__data dictionary
     #executed when the object is created
-    def read_file(self,path : str):
+    def read_file(self,path):
       
         try:
             text_file = open(path, 'r')
@@ -35,7 +35,7 @@ class DataFile():
         
         for line in lines:
             if line.find(':=') != -1 and line.find('#') == -1 :
-                var_and_val[line.split(':=',1)[0]] =self.__check_for_types(line.split(':=',1)[1].replace('\n',''))
+                var_and_val[line.split(':=',1)[0]] =self.translate_string(line.split(':=',1)[1].replace('\n',''))
         
         
         return var_and_val
@@ -43,7 +43,7 @@ class DataFile():
 
     #this method check wether the value is 
     #dictionary or list or int or string
-    def __check_for_types(self, value):
+    def translate_string(self, value):
 
       
         if re.search('\{(.+:.+,?)+\}',value):
@@ -71,7 +71,7 @@ class DataFile():
         
 
     # insert if not exist update if exist 
-    def update(self, var : str , val):
+    def update(self, var, val):
 
         self.__data[var] = val 
         
@@ -80,14 +80,14 @@ class DataFile():
     #update and delete methods has to be chained with save method to
     #make changes in the datafile
     #if you didn't chain it will only change the value in the data dict and wont be saved 
-    def delete(self , var : str):
+    def delete(self , var ):
         
         self.__data.pop(var ,None)
         
         return self
 
 
-    def copy_to(self, file_path : str):
+    def copy_to(self, file_path):
         original_path = self.__path
         self.__path = file_path
         self.save()
@@ -103,12 +103,12 @@ class DataFile():
         text_file = open(self.__path, 'w')
           
         for key in self.__data:
-            if type(self.__data[key]) == list :
+            if isinstance(self.__data[key], list) :
                 dictlist = {'list' : self.__data[key]}
                 text_file.write(key  +  ':='  + json.dumps(dictlist).replace('{"list":' , '').strip('}') + '\n')                
                 continue
 
-            if type(self.__data[key]) == dict:
+            if isinstance(self.__data[key], dict):
                 text_file.write(key + ':=' + json.dumps(self.__data[key]) + '\n')
                 continue
             

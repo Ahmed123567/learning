@@ -55,7 +55,7 @@ class Istpian():
 
    
     # get the page content and put it in the soup
-    def get_the_page_content(self, url : str, cookie : str) -> str:
+    def get_the_page_content(self, url , cookie ) :
         response = requests.get(url, cookies=cookie , verify=False)
         return response.text
 
@@ -69,11 +69,11 @@ class Istpian():
 
             self.__radio_inputs = soup.find_all('input', type='radio')
 
-            self.__action = self.__radio_inputs[5].find_previous('form').get('action')
+            self.__action = self.__radio_inputs[15].find_previous('form').get('action')
 
-            self.__hidden_inputs = self.__radio_inputs[5].find_previous('form').findChildren('input', type='hidden')
+            self.__hidden_inputs = self.__radio_inputs[15].find_previous('form').findChildren('input', type='hidden')
 
-            self.__radio_inputs = self.__radio_inputs[5].find_previous('form').findChildren('input', type='radio')
+            self.__radio_inputs = self.__radio_inputs[15].find_previous('form').findChildren('input', type='radio')
       
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -88,7 +88,7 @@ class Istpian():
     # radio_inputes is alist of beatifulsoup input objects
     # or list of dicts with the key "name" ex:=> [{'name':'the input name'}, {'name':'the input name'},{'name':'the input name'}] 
     # for hidden_inputs ex:=> [{'name':'hidden1','value':2},{'name':'hidden2', 'value':4}]
-    def genrate_input_data(self,options, radio_inputs : list, hidden_inputs='')->dict:
+    def genrate_input_data(self,options, radio_inputs , hidden_inputs=''):
         data = {}
 
         for input in radio_inputs:
@@ -107,8 +107,8 @@ class Istpian():
         return data
 
   
-    def setSubject(self,subname : str):
-        self.__subject = subname
+    def setSubject(self,subname):
+        self.__subject = str(subname)
 
     #load the data before fire
     def __load(self):
