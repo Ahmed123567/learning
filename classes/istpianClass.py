@@ -14,7 +14,7 @@ while True:
         if e.msg.split(' ')[-1] in keyboard_Interrupt:
           exit()
        
-        print(e)
+        print(f"{e.msg.split(' ')[-1]} is not installed ")
         ask_user = input(f"do you want to install {e.msg.split(' ')[-1]} [y / n] : ")
         
         keyboard_Interrupt.append(e.msg.split(' ')[-1])
