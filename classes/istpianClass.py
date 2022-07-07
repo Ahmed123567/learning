@@ -3,30 +3,27 @@ import random
 import requests
 import sys, os
 
-#this function can has any number of import statment 
-#if the module is not installed it will install it
-#you has to define the module name as global to make usable in the all code
 keyboard_Interrupt = []
-def import_or_install():
+# import or install 
+while True:
     try:
-        global BeautifulSoup
         from bs4 import BeautifulSoup
-        
+        break
     except ModuleNotFoundError as e:
         #if the pip install is colsed using ctrl+C will exit the code
         if e.msg.split(' ')[-1] in keyboard_Interrupt:
           exit()
        
         print(e)
-        print(f"installing {e.msg.split(' ')[-1]}...")
+        ask_user = input(f"do you want to install {e.msg.split(' ')[-1]} [y / n] : ")
+        
         keyboard_Interrupt.append(e.msg.split(' ')[-1])
-
-        os.system('pip3 install ' + e.msg.split(' ')[-1])
-        import_or_install()
-
-import_or_install()
-
-
+        
+        if ask_user.lower() != "n" and ask_user.lower() != "no":
+            print(f"installing {e.msg.split(' ')[-1]}...")
+            os.system('pip3 install ' + e.msg.split(' ')[-1])
+        else:
+            exit() 
 
 
 HEADER = '\033[95m'
@@ -65,15 +62,16 @@ class Istpian():
     # get the form action of the istpian and put it into self.action 
     def __deal_with_soup(self):
         try:
+            rad_indx = 15
             soup = BeautifulSoup(self.get_the_page_content(self.__urlreq, self.__cookie), 'html.parser')
 
             self.__radio_inputs = soup.find_all('input', type='radio')
 
-            self.__action = self.__radio_inputs[15].find_previous('form').get('action')
+            self.__action = self.__radio_inputs[rad_indx].find_previous('form').get('action')
 
-            self.__hidden_inputs = self.__radio_inputs[15].find_previous('form').findChildren('input', type='hidden')
+            self.__hidden_inputs = self.__radio_inputs[rad_indx].find_previous('form').findChildren('input', type='hidden')
 
-            self.__radio_inputs = self.__radio_inputs[15].find_previous('form').findChildren('input', type='radio')
+            self.__radio_inputs = self.__radio_inputs[rad_indx].find_previous('form').findChildren('input', type='radio')
       
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -83,16 +81,31 @@ class Istpian():
             print(f"{GREEN}Are you sure you entered the write url [the url you enterd is '{self.__urlreq}']{ENDC}")
             exit()
 
+
+    def is_list_of_strings(self, alist):
+        return bool(alist) and all(isinstance(elem, str) for elem in alist)
+
   
     # genrate the the data dictionary to be submited
-    # radio_inputes is alist of beatifulsoup input objects
-    # or list of dicts with the key "name" ex:=> [{'name':'the input name'}, {'name':'the input name'},{'name':'the input name'}] 
-    # for hidden_inputs ex:=> [{'name':'hidden1','value':2},{'name':'hidden2', 'value':4}]
-    def genrate_input_data(self,options, radio_inputs , hidden_inputs=''):
+    # radio_inputs is alist of beatifulsoup input objects
+    # or list of dicts with the key "name" ex:=> [{'name':'the input name'}, {'name':'the input name'},{'name':'the input name'}]
+    # radio_inputs can also take just alist of the input field names ex:=>   ['ahmed','omar', 'sayed'] 
+    # for other_inputs ex:=> [{'name':'hidden1','value':2},{'name':'hidden2', 'value':4}]
+    def genrate_input_data(self,options, radio_inputs='' , other_inputs=''):
         data = {}
+        
+        # excute if the radio_unputs is list of strings to prebare the data
+        # convert from ['ahmed','omar', 'sayed'] to [{'name':'ahmed'}, {'name':'omar'},{'name':'sayed'}]
+        if self.is_list_of_strings(radio_inputs):
+            radio_data={}
+            radio_list=[]
+            for item in radio_inputs:
+                radio_data['name'] = item
+                radio_list.append(radio_data.copy())
+            radio_inputs = radio_list
 
+       # this the main part of the function that genrate the data dict to be submitted
         for input in radio_inputs:
-            #isinstance check if options is list type
             if isinstance(options, list):
                 rand_idx = random.randrange(len(options))
                 data[input.get('name')] =options[rand_idx]
@@ -101,7 +114,7 @@ class Istpian():
             data[input.get('name')] = options
                
         
-        for input in hidden_inputs:
+        for input in other_inputs:
             data[input.get('name')] = input.get('value')
 
         return data

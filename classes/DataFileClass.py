@@ -19,7 +19,7 @@ class DataFile():
     def read_file(self,path):
       
         try:
-            text_file = open(path, 'r')
+            lines = open(path, 'r').readlines()
         except Exception as e :
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -27,9 +27,6 @@ class DataFile():
             print(f"Exception : {e} {ENDC}")
             exit()
         
-        lines = text_file.readlines()
-        text_file.close()
-
         var_and_val = {}
         
         
@@ -65,7 +62,7 @@ class DataFile():
         return self.__data
 
     #return None if the the varname dosent exist
-    def get_val(self, varname:str): 
+    def get_val(self, varname): 
      
         return self.__data.get(varname)
         
@@ -113,5 +110,7 @@ class DataFile():
                 continue
             
             text_file.write(key + ':=' + str(self.__data[key]) + '\n')
+
+        text_file.close()
 
 

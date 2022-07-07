@@ -1,4 +1,4 @@
-cookie:=_ttp=a4685fbf-f1b7-4090-8197-a90bcb0c6fe1; _sctr=1|1653948000000; MoodleSession=d17684a0d35dc96b025253e364515fb3; intelliboardPage=module; intelliboardParam=1797; intelliboardTime=30
+cookie:=name=aname;age=number
 url:=http://localhost/form.php
 options:=[1,2,3,5]
 ints:= [[1, 2], [12, 41]]

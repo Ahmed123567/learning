@@ -1,4 +1,3 @@
-import time
 import sys,os
 
 RED = '\033[91m'
@@ -26,11 +25,11 @@ class Cookies():
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
             print("Exception : ", e)
-            print(f'{GREEN}Cookie Formate : name=aname;age=31')
+            print(f'{GREEN}Cookie Formate : name=aname;age=31{ENDC}')
             exit()
 
-        cookie_list = [cookie_name, cookie_value]
-        return cookie_list
+
+        return [cookie_name, cookie_value]
 
 
     # read the cookie from the cookie.txt file and send to cookie_array method
@@ -45,7 +44,7 @@ class Cookies():
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(f"{RED}Error Type :" , exc_type , " At File :" , fname , ' Line :' , exc_tb.tb_lineno)
-            print("Exception : ", e)
+            print("Exception : ", e ,ENDC)
             exit()
 
         
@@ -77,6 +76,7 @@ class Cookies():
         return cookie_list
 
     #this where you should start reading the code
+    
     def cookie_formate(self):
         cookie_list = self.cookie_array(self.__cookie)
     
